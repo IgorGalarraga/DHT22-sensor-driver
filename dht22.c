@@ -118,7 +118,7 @@ static int __init dht22_init(void)
 sysfs_err:
 	kobject_put(dht22_kobj);
 kobject_err:
-	free_irq(gpio, NULL);
+	free_irq(irq_number, NULL);
 irq_err:
 	gpio_unexport(gpio);
 	gpio_free(gpio);
