@@ -10,8 +10,12 @@
 #include <linux/hrtimer.h>
 #include <linux/kobject.h>
 
+
 #include "dht22.h"
 #include "dht22_sm.h"
+
+// Manipulate by gpio_desc flags directly to allow quick switching from GPIO IN +IRQ mode to GPIO OUT
+#include "dht22_hck.h"
 
 static struct dht22_sm *sm;
 static struct timespec64 ts_prev_gpio_switch, ts_prev_reading;
@@ -238,10 +242,12 @@ static void trigger_sensor(struct work_struct *work)
 
 	mdelay(TRIGGER_DELAY);
 
+	dht_clear_irq_flag(gpio);
 	gpio_direction_output(gpio, LOW);
 	mdelay(TRIGGER_SIGNAL_LEN);
 
 	gpio_direction_input(gpio);
+	dht_set_irq_flag(gpio);
 	udelay(TRIGGER_POST_DELAY);
 
 	if (!autoupdate && !hrtimer_active(&retry_timer)) {
