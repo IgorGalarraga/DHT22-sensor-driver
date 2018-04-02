@@ -395,12 +395,12 @@ static void process_results(struct work_struct *work)
 	raw_humidity = humidity;
 	raw_temperature = temperature;
 
-	pr_info("Temperature: %d.%d C; Humidity: %d.%d%%\n",
+/*	pr_info("Temperature: %d.%d C; Humidity: %d.%d%%\n",
 		temperature / 10,
 		temperature % 10,
 		humidity / 10,
 		humidity % 10);
-
+*/
 	retry = false;
 	cleanup_func(NULL);
 }
