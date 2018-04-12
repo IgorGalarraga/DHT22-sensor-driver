@@ -4,3 +4,4 @@ notes.txt
 *cmd
 Module.symvers
 *.swp
+*.ko
