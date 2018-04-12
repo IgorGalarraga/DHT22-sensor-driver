@@ -1,0 +1,15 @@
+#Use this Makefile for crosscompilation offtree module.
+#https://www.raspberrypi.org/documentation/linux/kernel/building.md
+
+obj-m  := dht22_driver.o
+dht22_driver-objs := dht22.o dht22_sm.o dht22_hck.o
+
+#Your linux cloned directory:
+KERNEL_SRC = $(HOME)/devel/raspberry_linux
+#Your crosscompilation tools cloned directory:
+CROSS_TOOL = $(HOME)/devel/tools/raspberry/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
+
+all:
+	make C=2 -C $(KERNEL_SRC) ARCH=arm CROSS_COMPILE=$(CROSS_TOOL) M=$(PWD) modules
+clean:
+	make -C $(KERNEL_SRC) M=$(PWD) clean
