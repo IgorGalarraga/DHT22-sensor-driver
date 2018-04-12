@@ -251,7 +251,7 @@ static void trigger_sensor(struct work_struct *work)
 	udelay(TRIGGER_POST_DELAY);
 
 	if (!autoupdate && !hrtimer_active(&retry_timer)) {
-		retry = true;
+		retry = false;
 		hrtimer_forward_now(&retry_timer, kt_retry_interval);
 		hrtimer_restart(&retry_timer);
 	}
@@ -312,7 +312,7 @@ static enum hrtimer_restart retry_timer_func(struct hrtimer *hrtimer)
 
 	hrtimer_forward_now(&retry_timer, kt_retry_interval);
 
-	return (retry ? HRTIMER_RESTART : HRTIMER_NORESTART);
+	return ((retry || retry_count) ? HRTIMER_RESTART : HRTIMER_NORESTART);
 }
 
 static irqreturn_t dht22_irq_handler(int irq, void *data)
@@ -389,6 +389,7 @@ static void process_results(struct work_struct *work)
 				sensor_data[4]);
 
 		cleanup_func(NULL);
+		retry = true;
 		return;
 	}
 
@@ -407,7 +408,6 @@ static void process_results(struct work_struct *work)
 		humidity / 10,
 		humidity % 10);
 */
-	retry = false;
 	cleanup_func(NULL);
 }
 
